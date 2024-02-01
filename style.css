@@ -281,6 +281,10 @@ img {
   position: absolute;
 }
 
+.week-image:hover {
+  transform: scale(1.15);
+}
+
 .home-text-2 {
   color: #555;
   text-align: center;

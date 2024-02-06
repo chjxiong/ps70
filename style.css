@@ -279,6 +279,7 @@ img {
 .week-image {
   display: block;
   position: absolute;
+  transition: transform 1s;
 }
 
 .week-image:hover {

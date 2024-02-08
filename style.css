@@ -29,6 +29,7 @@ img {
   display: inline-block;
 }
 
+
 .window1 {
   width: 100vw;
   height: 100vh;
@@ -430,11 +431,19 @@ img {
 .doc-page-image-block {
   width: 45vw;
   margin-top: 5px;
+
+  overflow: hidden;
 }
 
 .doc-page-image {
   object-fit: cover;
+  transition: transform 1s;
 }
+
+.doc-page-image:hover {
+  transform: scale(1.15);
+}
+
 
 .description {
   width: 45vw;

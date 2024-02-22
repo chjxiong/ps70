@@ -16,6 +16,12 @@
 
     <script type="text/javascript">WebFont.load({ google: { families: ["Inconsolata:400,700"] } });</script>
     <link href="./Source/webicon.jpg" rel="shortcut icon" type="image/x-icon" />
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/arduino-light.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/arduino.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
   </head>
 
 <body class="body">
@@ -33,7 +39,7 @@
         </div>
         
         <a class="block_timeline2 inline-block">
-            <img src="./Source/04.jpg" loading="lazy" alt="" class="week-image" />
+            <img src="./Source/WK4/parking lot 0.jpg" loading="lazy" alt="" class="week-image" />
         </a>
 
         <div class="timeline2">
@@ -123,51 +129,238 @@
 
     <div class="documentation-page-2">
         
-        <div class="title">WK4: Microcontroller Programming</div>
-        
-        <div class="subtitle">Subtitle</div>
+        <div class="title">WK4: Microcontroller</div>
+        <br>
         <div class="description">
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-            tincidunt ut laoreet dolore magna aliquam erat volutpat.
-        </div>
-        <a class="doc-page-image-block inline-block">
-        <img src="./Source/04.jpg" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
-        </a>
-        <div class="caption">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-            tincidunt ut laoreet dolore magna aliquam erat volutpat.
-        </div>
-        
-        <div class="subtitle">Subtitle</div>
-        <div class="subsubtitle">Sub-subtitle</div>
+          I was very confused about everything even after the two lectures and the lab, 
+          so I watched a lot of online tutorials to get more familiar with the whole microcontroller thing.
+          Here are some of the resources I found might be helpful. There are some videos talking about mechanisms of
+          <a href="https://robocraze.com/blogs/post/what-is-motor-driver">motor driver</a>, 
+          <a href="https://www.youtube.com/watch?v=GQatiB-JHdI">dc motor</a>, 
+          <a href="https://www.youtube.com/watch?v=1WnGv-DPexc">servo motor</a>, 
+          <a href="https://www.youtube.com/watch?v=09Mpkjcr0bo">step motor</a>, and
+          <a href="https://www.youtube.com/watch?v=59HBoIXzX_c">ac motor</a>.
+          And then there are some other things including 
+          <a href="https://www.youtube.com/watch?v=ygrsIqWOh3Y">driving dc motors with microcontrollers</a>, 
+          <a href="https://www.youtube.com/watch?v=BLrHTHUjPuw">Arduino</a>,
+          and <a href="https://www.youtube.com/watch?v=aGHrhm-Rcp0">gear systems</a>.
+      </div>
+
+        <div class="subtitle">Something from Last Week</div>
         <div class="description">
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-            tincidunt ut laoreet dolore magna aliquam erat volutpat.
-        </div>
-        <a class="doc-page-image-block inline-block">
-        <img src="./Source/04.jpg" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
-        </a>
-        <div class="caption">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-            tincidunt ut laoreet dolore magna aliquam erat volutpat.
+            For last week, the problem of rotation speed was not solved because it was hard to control the speed of a dc mortor through voltage,
+            but it would be easy if we use the microcontroller.
+            Thus, I connected the core machine from last week with a dc motor, a motor driver, and a potentiometer,
+            so that I was able to control the motor speed with the potentiometer.
         </div>
 
-        <div class="subtitle">Subtitle</div>
-        <div class="subsubtitle">Sub-subtitle</div>
+        <a class="doc-page-image-block inline-block">
+          <img src="./Source/WK4/motor control.JPG" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+        </a>
+        <div class="caption">Wires Connection.</div>
+
+        <a class="doc-page-image-block inline-block">
+        <img src="./Source/WK4/motor control circuits.PNG" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+        </a>
+        <div class="caption">Circuits Diagram for Motor Control.</div>
+
+        <video class="doc-page-image-block inline-block" controls>
+          <source src="./Source/WK4/motor control 2.mp4" type="video/mp4">
+        </video>
+        <div class="caption">Control the speed of a dc motor. It's preferable with the sound on.</div>
+
+        <video class="doc-page-image-block inline-block" controls>
+          <source src="./Source/WK4/motor control 3.mp4" type="video/mp4">
+        </video>
+        <div class="caption">Connect the controller to the core machine from last week. Now the pointer rotates a quarter revolutions per second.</div>
+        
+        
+        <div class="subtitle">Parking Lot Gates</div>
+        <!-- <div class="subsubtitle">Reference</div> -->
         <div class="description">
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-            tincidunt ut laoreet dolore magna aliquam erat volutpat.
+            This is a parking lot gates system mainly controlled by the ultrasonic sensors. 
+            The idea was from <a href="https://www.youtube.com/watch?v=O7yoa-hwnkI">this video</a>, 
+            but I further developed and make the system more intelligent.
         </div>
         <a class="doc-page-image-block inline-block">
-        <img src="./Source/04.jpg" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+        <img src="./Source/WK4/reference.png" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
         </a>
-        <div class="caption">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-            tincidunt ut laoreet dolore magna aliquam erat volutpat.
+        <div class="caption">Reference Image. Source: https://www.youtube.com/watch?v=O7yoa-hwnkI</div>
+        <br>
+        <div class="description">
+          The gates open and close based on the ultrasonic sensors that are able to dectect the distance. 
+          When there is something within a certain distance in front of the ultrasonic sensors, 
+          the microcontroller send out several messages to ask the motors to do something. 
+          The settings of distance and actions are controlled by the Arduino codes.
         </div>
+        <a class="doc-page-image-block inline-block">
+          <img src="./Source/WK4/parking lot circuits.png" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+        </a>
+        <div class="caption">Circuits Diagram.</div>
+
+
+        <div class="description">
+          Two ultrasonic sensors, two lights, and two servo motors are the main components of the system that works the same way as it does in real life.
+          The two servo motors represent the entrance gate and exit gate respectively, 
+          and the two lights in different colors represent whether the parking lot is full or not.
+        </div>
+        <a class="doc-page-image-block inline-block">
+          <img src="./Source/WK4/parking lot 1.JPG" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+        </a>
+        <div class="caption">Wires Connection.</div>
+
+        <div class="description">
+          The mechanism and the codes template of ultrasonic sensors are available 
+          <a href="https://howtomechatronics.com/tutorials/arduino/ultrasonic-sensor-hc-sr04/">here</a>.
+          Utilizing ultrasonic sensors, the system detects approaching vehicles at the gate, 
+          subsequently opening or closing it as needed.
+        </div>
+        <video class="doc-page-image-block inline-block" controls>
+          <source src="./Source/WK4/parking lot 2.mp4" type="video/mp4">
+        </video> 
+        <div class="caption">Ultrasonic sensors detect the distance and result in the rotation of the servo motors.</div>
+        
+        <br>
+        <div class="description">
+          This video illustrates how the gate system works. 
+          <br>
+          My original story also included some other functions but it was hard to realize for now. 
+          The exit gate was supposed to be controlled by the parking attendant who will press the button only after the car has paid for the parking.
+          Meanwhile, someone who has paid the annual membership is able to go through the gate without paying, and the door will open automatically without the parking attendant pressing the button.
+          The membership should be detected with another type of sensor rather than the ultrasonic sensor.
+        </div>
+        <video class="doc-page-image-block inline-block" controls>
+          <source src="./Source/WK4/parking lot 3.mp4" type="video/mp4">
+        </video> 
+        <div class="caption">The parking gate system.</div>
+        
+        <br><br>
+        <div class="description">
+          Here are the codes. There are many potentials future improvement, such as replacing the delay() with millis(), 
+          as well as restructuring function and loop statements to be more concise.
+        </div>
+        <pre style="width: 45vw; height: 60vh; overflow: scroll;"><code>
+          #include <Servo.h>
+
+            Servo myservo; 
+            Servo myservo2;     
+            
+            int pos = 0;
+            int pos2 = 0;
+            
+            int distance = 0;
+            int distance2 = 0;
+            
+            int count = 0;
+            
+            int buttonPin = 4;
+            int buttonVal;
+            
+            int ledPin1 = 8;
+            int ledPin2 = 12;
+            
+            long readDistance(int triggerPin, int echoPin)
+            {
+              pinMode(triggerPin, OUTPUT); 
+              digitalWrite(triggerPin, LOW);
+              delayMicroseconds(2);
+              digitalWrite(triggerPin, HIGH);
+              delayMicroseconds(10);
+              digitalWrite(triggerPin, LOW);
+              pinMode(echoPin, INPUT);
+              return pulseIn(echoPin, HIGH);
+            }
+
+            void setup() {
+              digitalWrite(12,LOW);
+              myservo.attach(3);
+              myservo2.attach(9);   
+              pinMode(buttonPin, INPUT_PULLUP);
+              pinMode(ledPin1, OUTPUT);
+              pinMode(ledPin2, OUTPUT);
+              Serial.begin(9600);
+            }
+            
+            void loop() {
+              buttonVal = digitalRead(buttonPin);
+              distance = 0.034 * readDistance(5, 2) / 2;
+              distance2 = 0.034 * readDistance(6, 7) / 2;
+              digitalWrite(ledPin2, LOW);
+              digitalWrite(ledPin1, HIGH);
+            
+            if (count == 3){
+                digitalWrite(ledPin2, HIGH);
+                digitalWrite(ledPin1, LOW);
+              }
+            
+            if (count < 3 ) {
+                digitalWrite(ledPin2, LOW);
+                digitalWrite(ledPin1, HIGH);
+              }
+            
+            if(distance<15 && count < 3){
+            
+              Serial.print("distance");
+              Serial.println(distance);
+              
+             for (pos = 0; pos <= 90; pos += 1) { 
+                myservo.write(pos);             
+               delay(15);                       
+              }
+              delay(500);
+            
+              for (pos = 90; pos >= 0; pos -= 1) { 
+                myservo.write(pos);
+                delay(15);                                     
+              }
+              count += 1;
+              }    
+            
+            if(distance2<15){
+              Serial.print("distance2");
+              Serial.println(distance2);
+              
+             for (pos2 = 0; pos2 <= 90; pos2 += 1) { 
+                myservo2.write(pos2);             
+               delay(15);                       
+              }
+              delay(500);
+            
+              for (pos2 = 90; pos2 >= 0; pos2 -= 1) { 
+                myservo2.write(pos2);
+                delay(15);                                     
+              }
+              count -= 1;
+              }   
+            }
+        </code></pre> 
+  
 
     </div>
     
     <div class="space"></div>
-    
+  
 
 </body>
 
 </html>
+
+
+<!-- 
+dc motor https://www.youtube.com/watch?v=ygrsIqWOh3Y
+motor driver https://robocraze.com/blogs/post/what-is-motor-driver
+
+arduino https://www.youtube.com/watch?v=BLrHTHUjPuw
+
+servo motor mechanism https://www.youtube.com/watch?v=1WnGv-DPexc
+dc motor mechanism https://www.youtube.com/watch?v=GQatiB-JHdI
+step motor https://www.youtube.com/watch?v=09Mpkjcr0bo
+ac motor https://www.youtube.com/watch?v=59HBoIXzX_c
+
+gear https://www.youtube.com/watch?v=aGHrhm-Rcp0
+
+gear simulation https://geargenerator.com
+
+Ultrasonic sensor https://howtomechatronics.com/tutorials/arduino/ultrasonic-sensor-hc-sr04/
+
+parking lot https://www.youtube.com/watch?v=O7yoa-hwnkI -->

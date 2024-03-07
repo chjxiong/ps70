@@ -16,6 +16,12 @@
 
     <script type="text/javascript">WebFont.load({ google: { families: ["Inconsolata:400,700"] } });</script>
     <link href="./Source/webicon.jpg" rel="shortcut icon" type="image/x-icon" />
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/arduino-light.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/arduino.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 </head>
 
 <body class="body">
@@ -33,7 +39,7 @@
         </div>
         
         <a class="block_timeline2 inline-block">
-            <img src="./Source/06.jpg" loading="lazy" alt="" class="week-image" />
+            <img src="./Source/Wk6/solar tracker copy.jpg" loading="lazy" alt="" class="week-image" />
         </a>
 
         <div class="timeline2">
@@ -122,47 +128,231 @@
 
 
     <div class="documentation-page-2">
-        
-        <div class="title">WK6: Electronic Input Devices</div>
-        
-        <div class="subtitle">Subtitle</div>
+      <div class="title">WK6: Electronic Input Devices</div>
+      <div class="description">
+        I was kind of traumatized by the struggles and confusions I had experienced during this week because of the whole electricity and codes thing... 
+      </div>
+  
+        <div class="subtitle">Solar Tracker</div>
         <div class="description">
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-            tincidunt ut laoreet dolore magna aliquam erat volutpat.
+            The system is able to track the real sun location based on the four photoresistors located at the corners.
+            Two servos correspond to horizontal and vertical rotation respectively. 
+            Utilizing the two servos, the machine can orient itself in any direction, silumating the functionality of a solar panel tracking system in the real life.
         </div>
         <a class="doc-page-image-block inline-block">
-        <img src="./Source/06.jpg" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+        <img src="./Source/Wk6/components.jpg" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
         </a>
-        <div class="caption">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-            tincidunt ut laoreet dolore magna aliquam erat volutpat.
-        </div>
-        
-        <div class="subtitle">Subtitle</div>
-        <div class="subsubtitle">Sub-subtitle</div>
-        <div class="description">
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-            tincidunt ut laoreet dolore magna aliquam erat volutpat.
-        </div>
+        <div class="caption">Components Modelling</div>
+
         <a class="doc-page-image-block inline-block">
-        <img src="./Source/06.jpg" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+          <img src="./Source/Wk6/circuits diagram.png" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
         </a>
-        <div class="caption">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-            tincidunt ut laoreet dolore magna aliquam erat volutpat.
+        <div class="caption">Circuits Diagram</div>       
+        
+        <a class="doc-page-image-block inline-block">
+          <img src="./Source/Wk6/wire up.JPG" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+        </a>
+        <div class="caption">Connection</div>     
+
+        <a class="doc-page-image-block inline-block">
+          <img src="./Source/Wk6/components detail.jpg" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+        </a>
+        <div class="caption">Components</div>   
+
+
+        
+        <div class="description">
+          The tracker system was further enhanced with a battery that is able to store solar energy and charge the system when there is not sunlight.
         </div>
 
-        <div class="subtitle">Subtitle</div>
-        <div class="subsubtitle">Sub-subtitle</div>
+        <a class="doc-page-image-block inline-block">
+          <img src="./Source/Wk6/battery soldering.JPG" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+        </a>
+        <div class="caption">Battery Soldering</div>    
+
+        <a class="doc-page-image-block inline-block">
+          <img src="./Source/Wk6/battery short circuit.JPG" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+        </a>
+        <div class="caption">The failed short circuit version because of too much solder.</div>   
+
+
+
         <div class="description">
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-            tincidunt ut laoreet dolore magna aliquam erat volutpat.
+          And finally connecting everything together.
+          <br>
+          The system right now is very fragile, 
+          because the connection between the horizontal servor and the vertical servor's support is very weak. 
+          Thus, the structure is highly susceptible to fall apart especially, particularly during rotation of the horizontal servo.
+        </div>
+        
+        <a class="doc-page-image-block inline-block">
+          <img src="./Source/Wk6/fragile.JPG" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+        </a>
+        <div class="caption">The structure is very fragile because of the weak connection here which has to support the whole upper heavy part of the structure.</div>    
+        
+        <a class="doc-page-image-block inline-block">
+          <img src="./Source/Wk6/solar tracker.JPG" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+        </a>
+        <div class="caption">The system</div>  
+
+
+        <video class="doc-page-image-block inline-block" controls>
+          <source src="./Source/Wk6/tracker.mp4" type="video/mp4">
+        </video> 
+        <div class="caption">The Solar Tracker</div>
+
+        <pre style="width: 45vw; height: 60vh; overflow: scroll;"><code>
+          #include <Servo.h>
+
+            int TopRight = 1; 
+            int TopLeft = 2;
+            int BottomRight = 0; 
+            int BottomLeft = 3; 
+            int Avg1;
+            int Avg2;
+            
+            class Sweeper
+            {
+                Servo servo;
+                int servoPin;
+                int ServoStart;    
+                int ServoMin;
+                int ServoMax;
+                int pos; 
+                int increment;
+                int updateInterval;
+                unsigned long previousMillis;
+            
+            
+                public:
+                Sweeper(int interval){
+                    updateInterval = interval;
+                    ServoStart = 5;
+                    pos = ServoStart;
+                    ServoMin = 5;
+                    ServoMax = 175;
+                    increment = 1;
+                    }
+            
+                    void Attach(int pin){
+                    servo.attach(pin);
+                    }
+            
+                    void Detach(){
+                    servo.detach();
+                    }
+            
+                    void Rotate(int Avg1, int Avg2){
+                        ServoStart = servo.read();
+                        ServoStart = servo.read();
+                        // servo.write(0);
+                        // servo.write(0);    
+            
+            
+                        if(millis() - previousMillis > updateInterval)
+                        {         
+                          previousMillis = millis();
+                          if (Avg1 < Avg2)
+                          { 
+                            previousMillis = millis();
+                            pos += increment;
+                            
+                            servo.write(pos);
+                            if (pos < ServoMin) 
+                            { 
+                              pos = ServoMin;
+                            }
+                            
+                          }
+                          else if (Avg2 < Avg1)
+                          {
+                            previousMillis = millis();
+                            pos -= increment;
+                            servo.write(pos);
+                            if (pos > ServoMax)
+                            {
+                              pos = ServoMax;
+                            }
+                          }
+                          else 
+                          {
+                            servo.write(ServoStart);
+                          }
+        
+                          if (abs(Avg1 - Avg2) < 150){
+                            pos = pos;
+                          }
+                        }
+                    }    
+            };
+            
+            Sweeper ServoHorizontal (10);
+            Sweeper ServoVertical (10);
+            
+             void setup () 
+             {
+              Serial.begin(9600);
+              ServoHorizontal.Attach(10);
+              ServoVertical.Attach(9);
+             }
+            
+            void loop()
+            {
+              int TopLeftVal = analogRead(TopLeft); 
+              int TopRightVal = analogRead(TopRight); 
+              int BottomLeftVal = analogRead(BottomLeft);
+              int BottomRightVal = analogRead(BottomRight);    
+              
+              int AvgTop = (TopLeftVal + TopRightVal) / 2; 
+              int AvgBot = (BottomLeftVal + BottomRightVal) / 2;
+              int AvgLeft = (TopLeftVal + BottomLeftVal) / 2;
+              int AvgRight = (TopRightVal + BottomRightVal) / 2;
+            
+              ServoHorizontal.Rotate(AvgLeft, AvgRight);
+              ServoVertical.Rotate(AvgTop, AvgBot);
+            
+            }
+        </code></pre> 
+
+
+
+
+
+        <div class="subtitle">Capacitive Sensor</div>
+        <div class="description">
+            This sensor is able to detect the water depth through the two metal pieces, using Transmit-Receive Sensing.
         </div>
         <a class="doc-page-image-block inline-block">
-        <img src="./Source/06.jpg" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+        <img src="./Source/Wk6/capacitive sensor.JPG" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
         </a>
-        <div class="caption">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-            tincidunt ut laoreet dolore magna aliquam erat volutpat.
+        <div class="caption">Water Depth Sensor</div>
+
+        <video class="doc-page-image-block inline-block" controls>
+          <source src="./Source/Wk6/capacitive sensor.mp4" type="video/mp4">
+        </video> 
+        <div class="caption">Water Depth Sensor</div>
+
+        <a class="doc-page-image-block inline-block">
+          <img src="./Source/Wk6/capacitive sensor reading.png" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+        </a>
+        <div class="caption">Calibration</div>
+
+        <a class="doc-page-image-block inline-block">
+          <img src="./Source/Wk6/capacitive sensor chart.png" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+        </a>
+        <div class="caption">Calibration</div>
+
+
+        <div class="subtitle">CNC</div>
+        <a class="doc-page-image-block inline-block">
+          <img src="./Source/Wk6/CNC.png" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+        </a>
+        <div class="caption">For CNC week</div>
+        <div class="description">
+          <a download href='./Source/WK6/cnc.stl'> Download stl file. </a>
         </div>
 
+      
     </div>
     
     <div class="space"></div>

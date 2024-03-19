@@ -16,6 +16,11 @@
 
     <script type="text/javascript">WebFont.load({ google: { families: ["Inconsolata:400,700"] } });</script>
     <link href="./Source/webicon.jpg" rel="shortcut icon" type="image/x-icon" />
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/arduino-light.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/arduino.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 </head>
 
 <body class="body">
@@ -123,45 +128,168 @@
 
     <div class="documentation-page-2">
         
-        <div class="title">WK7: Electronic Output Devices</div>
-        
-        <div class="subtitle">Subtitle</div>
+        <div class="title">WK7: MVP</div>
         <div class="description">
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-            tincidunt ut laoreet dolore magna aliquam erat volutpat.
-        </div>
-        <a class="doc-page-image-block inline-block">
-        <img src="./Source/07.jpg" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
-        </a>
-        <div class="caption">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-            tincidunt ut laoreet dolore magna aliquam erat volutpat.
-        </div>
-        
-        <div class="subtitle">Subtitle</div>
-        <div class="subsubtitle">Sub-subtitle</div>
+          I don't think this is the most challenging part of the final project...but this is all what I have for now.
+      </div>       
+        <div class="subtitle">Prototype</div>
         <div class="description">
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-            tincidunt ut laoreet dolore magna aliquam erat volutpat.
-        </div>
-        <a class="doc-page-image-block inline-block">
-        <img src="./Source/07.jpg" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
-        </a>
-        <div class="caption">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-            tincidunt ut laoreet dolore magna aliquam erat volutpat.
+            The kinetic facade is able to change its form in response to the current weather condition, such as temperature and sunlight.
+            This folding structure acts as window blinds, providing relief from direct sunlight during the hot summer months. 
+            It is able to open and close automatically based on the data from sensors.
         </div>
 
-        <div class="subtitle">Subtitle</div>
-        <div class="subsubtitle">Sub-subtitle</div>
-        <div class="description">
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-            tincidunt ut laoreet dolore magna aliquam erat volutpat.
-        </div>
         <a class="doc-page-image-block inline-block">
-        <img src="./Source/07.jpg" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+          <img src="./Source/WK7/algorithm.jpg" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+          </a>
+          <div class="caption">Algorithm</div>
+
+        <a class="doc-page-image-block inline-block">
+          <img src="./Source/WK7/close.JPG" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+          </a>
+          <div class="caption">Closed</div>
+
+        <a class="doc-page-image-block inline-block">
+          <img src="./Source/WK7/open.JPG" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+          </a>
+          <div class="caption">Opened</div>
+
+
+        <div class="description">
+          The original idea was to 3D print the object, but for unknown some reason, the 3D printing attempt failed and crashed,
+          It turned out that laser cutting would make things much easier (credited to Bobby),
+          so the decision was made to switch to laser cutting instead.
+        </div>  
+        
+        <a class="doc-page-image-block inline-block">
+          <img src="./Source/WK7/3d-print.png" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+          </a>
+        <div class="caption">3d print</div>
+
+        <a class="doc-page-image-block inline-block">
+          <img src="./Source/WK7/model.JPG" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+          </a>
+          <div class="caption">2d laser cutting</div>
+
+          <div class="description">
+            Wire up the circuits with a photoresistor and a thermistor.
+          </div>  
+        
+        <a class="doc-page-image-block inline-block">
+        <img src="./Source/WK7/circuits.JPG" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
         </a>
-        <div class="caption">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-            tincidunt ut laoreet dolore magna aliquam erat volutpat.
+        <div class="caption">Circuits</div>
+
+        <div class="description">
+          The fixed pulley ended up being gigantic simply because its diameter had to accommodate lifting the string to a specific height. 
+          To raise the blinds by 27cm while adhering to the servo's rotation limit of 180 degrees, 
+          the diameter needed to satisfy the requirement πd/2 < 27cm.
+          Enhancing the fixed pulley with a gear system might be beneficial, 
+          but the servo probably does not have enough power to drive the gear system effectively.
+        </div>  
+        
+            <video class="doc-page-image-block inline-block" controls>
+              <source src="./Source/Wk7/move.mp4" type="video/mp4">
+            </video> 
+            <div class="caption">Move</div>
+
+        <pre style="width: 45vw; height: 60vh; overflow: scroll;"><code>
+          #include <Servo.h>
+            int Temp = A0;
+            int Light = A1;
+            int TempMax = 28;
+            int TempMin = 20;
+            int TempVal;
+            
+            class Sweeper{
+                Servo servo;
+                int servoPin;
+                int ServoStart;    
+                int ServoMin;
+                int ServoMax;
+                int pos; 
+                int increment;
+                int updateInterval;
+                unsigned long previousMillis;
+            
+            
+                public:
+                Sweeper(int interval){
+                    updateInterval = interval;
+                    ServoStart = 5;
+                    pos = ServoStart;
+                    ServoMin = 5;
+                    ServoMax = 175;
+                    increment = 1;
+                    }
+            
+                    void Attach(int pin){
+                    servo.attach(pin);
+                    }
+            
+                    void Detach(){
+                    servo.detach();
+                    }
+            
+                    void Rotate(int TempVal){
+                    ServoStart = servo.read();
+                    if(millis() - previousMillis > updateInterval){
+                    previousMillis = millis();
+            
+                    if(470 < TempVal && TempVal < 490){
+                     
+                    pos = map(TempVal, 470, 490, 0, 180);
+            
+                    servo.write(pos);
+            
+                    }
+                    
+                    if(TempVal>=490){
+                    servo.write(ServoMax);
+                    }
+            
+                            
+                    if(TempVal < 470){
+                    servo.write(ServoMin);
+                    }
+                      Serial.println(pos);
+                }
+              }
+                     };
+            Sweeper ServoX (50);
+            
+            void setup() {
+              Serial.begin(9600);
+            
+              ServoX.Attach(9);
+            }
+            
+            void loop() {
+            
+              int TempVal  = analogRead(Temp);
+            
+              ServoX.Rotate(TempVal);
+            
+            }
+        
+        </code></pre> 
+
+        
+
+        <div class="subtitle">Work in Progress</div>
+        <div class="description">
+            Dynamic facade structure with dynamic solar panels in the middle, so that the system could not only react to the weather condition, but generating energy at the same time.
         </div>
+
+        <video class="doc-page-image-block inline-block" controls>
+          <source src="./Source/Wk7/simulation.mp4" type="video/mp4">
+        </video> 
+        <div class="caption">Simulation</div>
+
+        <a class="doc-page-image-block inline-block">
+          <img src="./Source/WK7/starshade.JPG" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+          </a>
+          <div class="caption">Starshade</div>
 
     </div>
     

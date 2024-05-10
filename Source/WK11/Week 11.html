@@ -1,0 +1,208 @@
+<html lang="en" data-theme="dark">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>PS 70: Intro to Digital Fabrication</title>
+		<link rel="stylesheet" href="../style.css" />
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+		/>
+	</head>
+
+	<header>
+		<nav class="container">
+			<a href="../index.html">Home</a>
+			<a href="../about.html">About me!</a>
+		</nav>
+	</header>
+
+	<body>
+		<main class="container">
+			<h2 id="drawing-robot">Drawing robot</h2>
+			<h6 >Brought to you by: Yao, Chris, Chenjie, and Azhaan</h6>
+			<p>
+				For our drawing robot we wanted to create something that could recreate
+				pixel art. Our base goal was to create a robot that would use a stamp of
+				sorts to create squares imprints on a page, creating a &quot;grid&quot;
+				of stamps to form an image.
+			</p>
+			<p>This project required 3 main parts</p>
+			<ol>
+				<li>Assembling a frame to move our &quot;stamp&quot; on a 2x2 grid</li>
+				<li>Controlling the Stepper Motors to move through that grid</li>
+				<li>Getting the end effector (stamp) to end effect (stamp)</li>
+				<li>
+					Integrate all the parts
+				</li>
+			</ol>
+			<h3 id="creating-the-frame-">Creating the Frame:</h3>
+			<p>
+				For this step we used this
+				<a href="https://www.youtube.com/watch?v=5tGBE674HGU">assembly</a> as
+				our inspiration. Having two total stepper motors to control the movement
+				with a belt helping with advancing the jig.
+			</p>
+			<p>
+				There were three main challenges with assembling this. The first
+				challenge was learning how to assemble components at all, getting used
+				to working with aluminum extrusion and the existing pieces we had access
+				to. There was a big mental click we had to make to move from creating 3D
+				printed assemblies to working with larger projects that required 3D
+				printing not for their construction but for interfacing pieces more
+				securely.
+			</p>
+
+			<div class = "grid">
+				<div><img src = "../images/drawbot/3d 111.JPG" width = 100%></div>
+				<div><img src = "../images/drawbot/3d 222.JPG" width = 100%></div>
+			</div> <br>
+
+			<p>
+				The second challenge was creating the second axis of motion. Advancing
+				the centre black aluminum extrusion was fairly doable but advancing the
+				end effector along that extrusion proved to be more difficult.
+			</p>
+			<div class = "grid">
+				<div><img src = "../images/drawbot/side mount.jpeg" width = 100%></div>
+				<div>
+					<p>
+						Initially we were going to draw on the design in the video mentioned
+						above and we created 2 gears that would translate the rotation to
+						between the two axes. This proved to be much more difficult to actually
+						mount than &quot;securely attaching&quot; the second stepper motor to
+						the X-axis
+					</p>
+				</div>
+			</div> <br>
+			<p>
+				
+			</p>
+			<p>
+				The third challenge was creating a piece that can move along a threaded
+				rod. We created two main pieces to help with this. The first was used to
+				fix the threaded lead screw caps in a way that would advance if the rod
+				was turned. The second was to do the same but to advance the end
+				effector, requiring a moving attachment. This was fun to design
+			</p>
+
+			<div class = "grid">
+				<div><img src = "../images/drawbot/f360 2.png" width = 80%></div>
+				<div><img src = "../images/drawbot/3d 222.JPG" width = 80%></div>
+			</div> <br>
+
+			<div class = "grid">
+				<div><img src = "../images/drawbot/f360 1.png" width = 80%></div>
+				<div><img src = "../images/drawbot/3d 111.JPG" width = 80%></div>
+			</div> <br>
+
+			<h3 id="controlling-the-stepper-motors">
+				Controlling the Stepper Motors
+			</h3>
+			<p>
+				We had hoped that the stepper motors would be easy to work with since
+				the other motors we had worked with were reasonably straight forward
+				too. Simply getting the steppers to turn required significantly more
+				wiring and trial and error.
+			</p>
+			<div class = "grid">
+				<div><img src = "../images/drawbot/hmmmmmm.jpg" width = 100%></div>
+				<div><img src = "../images/drawbot/IMG_9747.jpeg" width = 70%></div>
+			</div> <br>
+			<p>
+				After a few hours we stumbled upon the correct configuration through
+				sheer luck and were finally able to get the stepper motor to go from
+				BBBZZZZZZZZZZ and ZZPP ZPPP ZZZP to rotating smoothly through the steps.
+			</p>
+			<p>
+				Once this was done we created a soldered board that had much more
+				reliable connections:
+			</p>
+			
+			<img src = "../images/drawbot/stepper turning.gif" width = 80%>
+
+			<h3 id="getting-the-stamp-to-stamp">Getting the stamp to stamp</h3>
+			<p>
+				Work on the stamp was moving parallel to the rest of the assembly. We
+				were able to get the solenoid to move up and down and created a mount
+				for it too.
+			</p>
+			<p>
+				The silicone for the stamp was a decent enough stamp and we were able to
+				get an inkpad for the stamp to &quot;re-ink&quot; itself
+			</p>
+			<h3 id="integrating-the-components">Integrating the components</h3>
+			<p>
+				This was where we met our end. Integrating all of this requires all of
+				these individual components to be able to work together AND also
+				requires programming to turn a grid into a traversable path for the
+				robot.
+			</p>
+			<p>
+				We weren&#39;t able to move past getting the physical components to work
+				together.
+			</p>
+			<p>
+				Trying to get the stepper motor to actually turn the rods was an issue. There were issed
+				Our guess is that there&#39;s too much friction on the Y-axis rods
+				because the X-axis rod was turning fairly successfully. We know that at
+				least the stepper motors are working. We were able to also get the Y-axis rods to turn under very
+				specific conditions. We needed to hold the motor really tight and needed to also put extra
+				tension on the belt.
+			</p>
+
+			<img src = "../images/drawbot/Convert to GIF project.gif" width = 80%><br><br>
+			<img src = "../images/drawbot/our thing.jpeg" width = 80%>
+
+			<h3 id="creating-the-frame-">Second Attempt:</h3>
+			<p>
+				The initial version of the drawing machine encountered many obstacles in mobility. 
+				The primary challenge was rod alignment.
+				When the rods were not parallel to each other, excessive friction impedes the motor's ability to drive rotation. 
+				The rods remain stationary when the motors are on.
+				Manually adjusting rod alignment proves very difficult and time consuming, 
+				so we began exploring alternative solutions.
+			</p>
+			<p>
+				We found that the support system, comprising the four wooden blocks elevating the rods and multiple metal brackets securing them, 
+				was very ineffective due to misalignment issues. 
+				Consequently, we opted to change our design of the support system.
+			</p>
+			<img src = "../images/drawbot/IMG_5469.JPG" width = 80%>
+
+			<p>
+				We retained the X-axis system as it worked perfectly with the motor. 
+				However, for the Y-axis, we transitioned from four wood blocks with rods to a configuration employing four wheels, 
+				so that we did not need to worry about any issues of alignment or friction.
+			</p>
+			<img src = "../images/drawbot/IMG_3368.mp4" width = 80%>
+			<p>
+				Two motors will actuate the gears, which in turn will drive the wheels to move.
+			</p>
+			<div class = "grid">
+				<div><img src = "../images/drawbot/IMG_3365.mp4" width = 100%></div>
+				<div><img src = "../images/drawbot/IMG_3364.jpeg" width = 100%></div>
+			</div> <br>
+			
+			<p>
+				Then we ensured the proper functionality of the original X-axis and stamp system.
+			</p>
+			<img src = "../images/drawbot/IMG_9786.mp4" width = 80%>
+			<p>
+				Finally, we assembled all components and calibrated the circle, 
+				enabling the drawing machine to successfully draw a &quot;circle&quot;.			
+			</p>
+			<p>
+				The machine looked very different from  its previous iteration, 
+				but actually we only modified the supporting system and replaced the Y-axis rods with four wheels.
+				Now, the machine can move smoothly without any friction or irritating noise resulting from rods rotation.			
+			</p>
+			<img src = "../images/drawbot/IMG_9826.jpeg" width = 80%>
+
+			<div class = "grid">
+				<div><img src = "../images/drawbot/IMG_9819.mp4" width = 100%></div>
+				<div><img src = "../images/drawbot/IMG_9822.mp4" width = 100%></div>
+			</div> <br>
+		</main>
+	</body>
+</html>

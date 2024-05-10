@@ -33,7 +33,7 @@
         </div>
         
         <a class="block_timeline2 inline-block">
-            <img src="./Source/15.jpg" loading="lazy" alt="" class="week-image" />
+            <img src="./Source/WK15/cover.jpg" loading="lazy" alt="" class="week-image" />
         </a>
 
         <div class="timeline2">
@@ -123,48 +123,203 @@
 
     <div class="documentation-page-2">
         
-        <div class="title">WK15: Final Project</div>
+        <div class="title">Environmentally Responsive Façade </div>
         
-        <div class="subtitle">Subtitle</div>
+        <div class="subtitle">Research</div>
         <div class="description">
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-            tincidunt ut laoreet dolore magna aliquam erat volutpat.
-        </div>
-        <a class="doc-page-image-block inline-block">
-        <img src="./Source/15.jpg" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
-        </a>
-        <div class="caption">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-            tincidunt ut laoreet dolore magna aliquam erat volutpat.
-        </div>
-        
-        <div class="subtitle">Subtitle</div>
-        <div class="subsubtitle">Sub-subtitle</div>
-        <div class="description">
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-            tincidunt ut laoreet dolore magna aliquam erat volutpat.
-        </div>
-        <a class="doc-page-image-block inline-block">
-        <img src="./Source/15.jpg" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
-        </a>
-        <div class="caption">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-            tincidunt ut laoreet dolore magna aliquam erat volutpat.
-        </div>
+          The project focuses on the development of an environmentally responsive building façade prototype, using a micro-controlling system and data-driven machine learning techniques to regulate the mechanical operation of the façade.
+          <br><br>
+          Current utilization of dynamic building facades still faces several research gaps that present opportunities for further investigation and innovation. While kinetic facades hold promise in terms of energy savings and aesthetics enhancement, their widespread adoption is hindered by upfront costs and operational complexities. Conventional operation algorithms, characterized by their static nature, fails to adapt dynamically to varying environmental conditions, thereby limiting their ability to achieve optimal energy efficiency. In addition, traditional building energy simulation processes require substantial time and computational resources to construct energy models and generate precise predictive results. This inefficiency underscores the necessity for streamlined methodologies to facilitate faster decision-making and implementation of kinetic facade solutions. Moreover, the escalating frequency of extreme weather events and climate fluctuations highlights the critical imperative to develop adaptive control strategies for changing climatic conditions. These strategies must be capable of swiftly responding to dynamic weather patterns, such as temperature variations, strong winds, and intense sunlight, to optimize building performance and energy efficiency. 
+          <br><br>
+          Therefore, this project utilizes a data-driven method to guide the real-time operation of the kinetic façade. By harnessing real-time data and predictive analytics, this shift towards adaptive control not only enhances the indoor occupant comfort in the face of climate change but also presents opportunities for maximizing energy savings and environmental sustainability.
+          <br><br>
+          Functioning as an additional layer to conventional building façades, this prototype enhances indoor environmental comfort by dynamically adjusting its configuration according to real-time weather conditions. Key consideration factors within this project are indoor luminance and temperature levels. As a shading structure, it manages daytime sunlight to optimize indoor human comforts. 
+          <br><br>
+          Comprising two principal components, the system includes a weather sensor system that continuously collects real-time data at 5-minute intervals, including temperature, air pressure, relative humidity, and luminance. This data is then utilized by a mechanical system capable of adapting its geometry in real-time response to the current weather parameters. To precisely instruct the microcontroller on operational parameters such as optimal opening angle and duration, a data-driven machine learning approach is used.
+          <br><br>
+          By leveraging various datasets including building energy simulations, historical Boston weather data, as well as real-time weather data, the machine learning model is trained to predict the most effective operation of the system. It subsequently provides the micro-controlling system with precise instructions on whether to open or close the façade, as well as specifying the ideal angle and duration for maximal energy performance. This synergy of advanced technologies ensures the façade operates at peak efficiency, enhancing both environmental sustainability and occupant comfort.
+          <br><br>
+          The data-driven method employed in this project leverages machine learning algorithms to predict the optimal parameters for operating the building façade. It encompasses several key stages, starting with data collection with the help of various sensors that store the 5-minute interval data into the Firebase cloud platform. The most relevant prediction inputs are chosen for the prediction task. These variables may include outdoor temperature, solar radiation, wind speed, indoor temperature, and luminance levels. The goal is to identify the factors that have the most significant impact on determining the optimal operation of the façade.
+          <br><br>
+          The subsequent stage involves model selection and training. Several machine learning methods are explored for their predictive capabilities, including linear regression, k-nearest neighbors, random forest, and deep learning (multilayer perceptron). Following model training, evaluation metrics including mean squared error (MSE), mean absolute error (MAE), and R-squared score are employed to assess the predictive performance of each model on a validation dataset. 
+          <br><br>
+          After evaluating the performance of each algorithm, the deep learning model was found to predict the best results in terms of prediction accuracy. This chosen model is then deployed into the system, where it continuously receives real-time data inputs from weather sensors and predicts the optimal façade operation parameters based on the incoming data. 
+          <br><br>
+          The final outcomes of the machine learning processes provide with the optimized operation parameters based on a control algorithm tailored for this façade structure. These operation instructions include specifications regarding the opening angle (horizontal displacement) and duration (the length of time each unit remains static) of the individual folding components within the system.
+          <br><br>
+          Through systematic exploration and selection of machine learning algorithms, the data-driven approach ensures that the building façade operates efficiently in response to changing environmental conditions, contributing to enhanced natural light exposure, views, and thermal comforts for building occupants. The facade system optimizes sunlight exposure, increasing it during winter months and reducing it in summer. This strategic adjustment helps to minimize heating and cooling consumption by leveraging natural light and solar heat gain when needed most. Additionally, by maximizing sunlight exposure, the system effectively decreases reliance on artificial lighting, thereby lowering electricity consumption for indoor illumination. This dual benefit of energy efficiency not only enhances environmental sustainability but also contributes to cost savings for building occupants. 
 
-        <div class="subtitle">Subtitle</div>
-        <div class="subsubtitle">Sub-subtitle</div>
+        </div>
+        
+        <div class="subtitle">Machine</div>
         <div class="description">
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-            tincidunt ut laoreet dolore magna aliquam erat volutpat.
+          The machine mainly includes two parts: the sensors and mechanical movement.
+          <br><br>
+          Hopefully there will be better pictures and videoos after the real installation. Current pictures are ugly...
+          (Disclaimer: The cover image was photoshopped)
+
+        </div>
+        <div class="subsubtitle">Senosrs</div>
+        <div class="description">
+            Several sensors are used to obtain both indoor and outdoor realtime data and stored the data in 5-minute intervals into Firebase.
+            The weather parameters include indoor and outdoor conditions regarding temperature, relative humidity, air pressure, luminance, and solar radiation.
+          
         </div>
         <a class="doc-page-image-block inline-block">
-        <img src="./Source/15.jpg" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+        <img src="./Source/WK15/sensor.JPG" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
         </a>
-        <div class="caption">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-            tincidunt ut laoreet dolore magna aliquam erat volutpat.
+        <div class="caption">Sensors</div>
+
+        <div class="description">
+          Skipping the research on the complex processes of jumping and converting between python and arduino codes,
+          I chose the Firebase as a transfer station that connects my python and arduino codes.
+      </div>
+      <a class="doc-page-image-block inline-block">
+        <img src="./Source/WK15/firebase-realtime.png" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+        </a>
+        <div class="caption">Store real-time data into Firebase</div>
+    
+      <a class="doc-page-image-block inline-block">
+        <img src="./Source/WK15/python.png" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+        </a>
+        <div class="caption">Send Operational Instruction from python to Firebase</div>
+      <a class="doc-page-image-block inline-block">
+        <img src="./Source/WK15/firebase-operation.png" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+        </a>
+        <div class="caption">Operational Instruction in Firebase</div>
+      <a class="doc-page-image-block inline-block">
+        <img src="./Source/WK15/get-firebase.png" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+        </a>
+        <div class="caption">Get instruction from Firebase in arduino</div>
+        <div class="description">
+          Sending the real-time data to Firebase was not hard, 
+          but I did spend some time to figure out how to generate the current timestamps in arduino and send them to Firebase together with the corresponding weather data as well.
+          The corresponding timestamp is important for the machine learning process because weather information is very time-sensitive.
+      </div>
+      <a class="doc-page-image-block inline-block">
+        <img src="./Source/WK15/timestamps.png" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+        </a>
+        <div class="caption">Timestamps</div>
+
+        <br>
+      <div class="description">
+       Other than the real-time data collected from sensors, 
+       the machine learning process also incorporates simulation data that is obtained from grasshopper climate studio.
+       Through the energy simulation, it provides with some predictions regarding energy consumption of winter heating as summer cooling.
+    </div>
+    <a class="doc-page-image-block inline-block">
+      <img src="./Source/WK15/grasshopper.png" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+      </a>
+      <div class="caption">Energy Simulation</div>
+    <a class="doc-page-image-block inline-block">
+      <img src="./Source/WK15/simulation_data.png" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+      </a>
+      <div class="caption">Dataset</div>
+
+
+        <div class="subsubtitle">Mechanical Movement</div>
+        <div class="description">
+          The machine itself is very simple. It is basically using several stepper motors to drive the horizontal movements of each folding unit.
+        
+      </div>
+
+        <div class="description">
+          The structure of the machine is pretty straightforward, with wood supportors/columns and 3d-print connectors. 
+      </div>
+      <a class="doc-page-image-block inline-block">
+        <img src="./Source/WK15/structure.jpg" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+        </a>
+        <div class="caption">Structure</div>
+
+        <a class="doc-page-image-block inline-block">
+          <img src="./Source/WK15/connectors.png" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+          </a>
+          <div class="caption">Connectors</div>
+
+        <div class="description">
+          Deciding the material of the folding structure is quite hard. 
+          Intially I tried plastic, but it requires lots of forces to be folded.
+          I also considered using the vacuum paper and 
+          So I ended up using the transparent paper for now.
+          But I still don't like this material. It is fragile and not applicable to the building material in real life.
+          I will do more research on the folding materials later.
+      </div>
+      <a class="doc-page-image-block inline-block">
+        <img src="./Source/WK15/starshade.JPG" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+        </a>
+        <div class="caption">Materials</div>
+      <a class="doc-page-image-block inline-block">
+        <img src="./Source/WK15/paper.png" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+        </a>
+        <div class="caption">Materials</div>
+
+        <div class="description">
+          The folding paper and wooden rods are connected via hinges.
+      </div>
+      <a class="doc-page-image-block inline-block">
+        <img src="./Source/WK15/hinges-model.png" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+        </a>
+        <div class="caption">Hinges</div>
+      <a class="doc-page-image-block inline-block">
+        <img src="./Source/WK15/hinges.PNG" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+        </a>
+        <div class="caption">Hinges</div>
+
+
+        <div class="description">
+            Idealy each unit should be driven by two motors in the same speed on the upper and lower sides, 
+            but this sounds very intense in terms of electricity consumption and machine simplicity.
+            So I chose to use only one motor for each folding unit for now.
+            <br><br>
+            The operational mechanism is similar to a conventional drawing machine, 
+            wherein a threaded rod and lead screw facilitate the translation of motor rotation into precise horizontal motions. 
+            The lab was facing material shortages including lead screws and brackets, but it was not hard to design and 3d print them from scratch.
         </div>
+        <a class="doc-page-image-block inline-block">
+          <img src="./Source/WK15/motor.JPG" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+          </a>
+          <div class="caption">Stepper Motors</div>
+        <a class="doc-page-image-block inline-block">
+          <img src="./Source/WK15/leadscrew.png" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+          </a>
+          <div class="caption">Lead Screw and Brackets</div>
+
+
+        <div class="description">
+            The structure moves at a deliberately slow pace, 
+            making it hard to notice changes quickly. 
+            While this may not seem particularly exciting for a classroom demonstration, 
+            it corresponds to the real-life scenarios where kinetic facades operate at lower frequencies and velocities. 
+            <br> <br>
+            Each folding unit is independently powered by separate motors,
+            with its own distinct speeds and travel distances tailored to their unique requirements. 
+            These parameters are determined by Python machine learning outcomes, 
+            which analyze optimal opening angles and durations for each unit. 
+            Such individualized operation is importatn as units are situated in different locations and might have different effects on indoor environments. 
+            For example, units positioned at lower levels may need to minimize direct sunlight exposure to occupants seated at study desks, thus necessitating nuanced adjustments to their movements.
+        </div>
+        
+        <a class="doc-page-image-block inline-block">
+          <img src="./Source/WK15/system.jpg" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+          </a>
+          <div class="caption">The machine</div>    
+
+        <a class="doc-page-image-block inline-block">
+          <img src="./Source/WK15/vid.mp4" loading="lazy" sizes="100vw" alt="" class="doc-page-image" />
+          </a>
+          <div class="caption">Movement</div>    
+
+          <br><br>
+          <div class="description">
+            <a href="./Source/WK15/code.txt"> Arduino Codes</a>        
+          </div>
+         
+          
+
+
 
     </div>
-    
+
     <div class="space"></div>
     
 

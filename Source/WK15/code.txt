@@ -1,0 +1,422 @@
+#include <Arduino.h>
+#include <WiFi.h>
+#include <WebServer.h>
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BME280.h>
+#include "time.h"
+#include "Adafruit_TSL2591.h"
+
+
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+const char* ntpServer = "pool.ntp.org";
+const long  gmtOffset_sec = -18000;
+const int   daylightOffset_sec = 3600;
+tm* currentTime;
+char currentTimeStamp [15];
+
+#include <Firebase_ESP_Client.h>
+//Provide the token generation process info.
+#include "addons/TokenHelper.h"
+//Provide the RTDB payload printing info and other helper functions.
+#include "addons/RTDBHelper.h"
+
+#include <ArduinoJson.h>
+
+#define SEALEVELPRESSURE_HPA (1013.25)
+ 
+Adafruit_BME280 bme;
+Adafruit_BME280 bme_out;
+
+Adafruit_TSL2591 tsl = Adafruit_TSL2591(2591);
+ 
+float temperature, humidity, pressure, altitude;
+float luminance;
+
+float out_temperature, out_humidity, out_pressure, out_altitude;
+
+ 
+const char* ssid = "MAKERSPACE";  // Enter SSID here
+const char* password = "12345678";  //Enter Password here
+ 
+// const char* ssid = "DESKTOP-G0R0JGH 7518";  // Enter SSID here
+// const char* password = "X8[893h2";  //Enter Password here
+
+#define API_KEY "AIzaSyBhV5urK1IxK5hXnFI47sAF80X1HUNYsZY"
+#define DATABASE_URL "https://datascience-32447-default-rtdb.firebaseio.com/" 
+//Define Firebase Data object
+FirebaseData fbdo;
+FirebaseAuth auth;
+FirebaseConfig config;
+unsigned long sendDataPrevMillis = 0;
+int count = 0;
+bool signupOK = false;
+int WindowAngle;
+int WindowDuration;
+
+WebServer server(80);             
+
+unsigned long interval = 10000;
+
+// Function declaration
+void StoreFirebase();
+void handle_OnConnect();
+void handle_NotFound();
+void printLocalTime();
+void configureSensor();
+void advancedRead();
+void OutdoorValues();
+
+String SendHTML();
+
+void setup() {
+  Serial.begin(115200);
+  delay(100);
+  
+  bme.begin(0x77);   
+  bme_out.begin(0x76); 
+ 
+  Serial.println("Connecting to ");
+  Serial.println(ssid);
+ 
+  //connect to your local wi-fi networkfi
+  WiFi.begin(ssid, password);
+ 
+  //check wi-fi is connected to wi- network
+  while (WiFi.status() != WL_CONNECTED) {
+  delay(300);
+  Serial.print(".");
+  }
+  Serial.println("");
+  Serial.println("WiFi connected..!");
+  Serial.print("Got IP: ");  
+  Serial.println(WiFi.localIP());
+ 
+  // Init and get the time
+  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+  printLocalTime();
+
+  server.on("/", handle_OnConnect);
+  server.onNotFound(handle_NotFound);
+ 
+  server.begin();
+  Serial.println("HTTP server started");
+  
+  /* Assign the api key (required) */
+  config.api_key = API_KEY;
+  /* Assign the RTDB URL (required) */
+  config.database_url = DATABASE_URL;
+
+  /* Sign up */
+  if (Firebase.signUp(&config, &auth, "", "")){
+    Serial.println("ok");
+    signupOK = true;
+  }
+  else{
+    Serial.printf("%s\n", config.signer.signupError.message.c_str());
+  }
+
+  /* Assign the callback function for the long running token generation task */
+  config.token_status_callback = tokenStatusCallback; //see addons/TokenHelper.h
+  
+  Firebase.begin(&config, &auth);
+  Firebase.reconnectWiFi(true);
+  
+  configureSensor();
+
+}
+
+
+void loop() {
+  
+if (Firebase.ready() && signupOK && (millis() - sendDataPrevMillis > interval || sendDataPrevMillis == 0)){
+    sendDataPrevMillis = millis();
+
+  server.handleClient();
+  server.send(200, "text/html", SendHTML(temperature, humidity, pressure, altitude, luminance));  
+  printLocalTime();
+  advancedRead();
+  OutdoorValues();
+
+
+    // store data to a RTDB
+    if (Firebase.RTDB.pushString(&fbdo, "DataSet/Time", currentTimeStamp)){
+      Serial.println("PASSED");
+      Serial.println("PATH: " + fbdo.dataPath());
+      Serial.println("TYPE: " + fbdo.dataType());
+    }
+    else {
+      Serial.println("FAILED: " + fbdo.errorReason());
+    }
+    
+    if (Firebase.RTDB.pushFloat(&fbdo, "DataSet/Temp", temperature)){
+      Serial.println("PASSED");
+      Serial.println("PATH: " + fbdo.dataPath());
+      Serial.println("TYPE: " + fbdo.dataType());
+    }
+    else {
+      Serial.println("FAILED: " + fbdo.errorReason());
+    }
+    if (Firebase.RTDB.pushFloat(&fbdo, "DataSet/Humidity", humidity)){
+      Serial.println("PASSED");
+      Serial.println("PATH: " + fbdo.dataPath());
+      Serial.println("TYPE: " + fbdo.dataType());
+    }
+    else {
+      Serial.println("FAILED: " + fbdo.errorReason());
+    }
+    if (Firebase.RTDB.pushFloat(&fbdo, "DataSet/Lux", luminance)){
+      Serial.println("PASSED");
+      Serial.println("PATH: " + fbdo.dataPath());
+      Serial.println("TYPE: " + fbdo.dataType());
+    }
+    else {
+      Serial.println("FAILED: " + fbdo.errorReason());
+    }
+    if (Firebase.RTDB.pushFloat(&fbdo, "DataSet/Out_Temp", out_temperature)){
+      Serial.println("PASSED");
+      Serial.println("PATH: " + fbdo.dataPath());
+      Serial.println("TYPE: " + fbdo.dataType());
+    }
+    else {
+      Serial.println("FAILED: " + fbdo.errorReason());
+    }
+    if (Firebase.RTDB.pushFloat(&fbdo, "DataSet/Out_Humidity", out_humidity)){
+      Serial.println("PASSED");
+      Serial.println("PATH: " + fbdo.dataPath());
+      Serial.println("TYPE: " + fbdo.dataType());
+    }
+    else {
+      Serial.println("FAILED: " + fbdo.errorReason());
+    }
+
+
+    if (Firebase.RTDB.getInt(&fbdo, "operation/Angle")) {
+      if (fbdo.dataType() == "int") {
+        WindowAngle = fbdo.intData();
+        Serial.println(WindowAngle);
+      }
+    }
+    else {
+      Serial.println(fbdo.errorReason());
+    }
+
+    if (Firebase.RTDB.getInt(&fbdo, "operation/Duration")) {
+      if (fbdo.dataType() == "int") {
+        WindowDuration = fbdo.intData();
+        Serial.println(WindowDuration);
+      }
+    }
+    else {
+      Serial.println(fbdo.errorReason());
+    }
+  
+  Serial.print("temp: ");
+  Serial.println(temperature);
+  Serial.print("luminance Level: ");
+  Serial.println(luminance);
+}
+}
+
+void handle_OnConnect() {
+  temperature = bme.readTemperature();
+  humidity = bme.readHumidity();
+  pressure = bme.readPressure() / 100.0F;
+  altitude = bme.readAltitude(SEALEVELPRESSURE_HPA);
+}
+ 
+void handle_NotFound(){
+  server.send(404, "text/plain", "Not found");
+}
+ 
+void printLocalTime(){
+  struct tm timeinfo;
+  if(!getLocalTime(&timeinfo)){
+    Serial.println("Failed to obtain time");
+    return;
+  }
+  // currentTime = &timeinfo, "%D %H:%M";
+  strftime(currentTimeStamp,15, "%D %H:%M", &timeinfo);
+  Serial.println(currentTimeStamp);
+  Serial.println();
+}
+
+// configure light Sensor
+void configureSensor(void)
+{
+  // You can change the gain on the fly, to adapt to brighter/dimmer light situations
+  //tsl.setGain(TSL2591_GAIN_LOW);    // 1x gain (bright light)
+  tsl.setGain(TSL2591_GAIN_MED);      // 25x gain
+  //tsl.setGain(TSL2591_GAIN_HIGH);   // 428x gain
+  
+  // Changing the integration time gives you a longer time over which to sense light
+  // longer timelines are slower, but are good in very low light situtations!
+  //tsl.setTiming(TSL2591_INTEGRATIONTIME_100MS);  // shortest integration time (bright light)
+  // tsl.setTiming(TSL2591_INTEGRATIONTIME_200MS);
+  tsl.setTiming(TSL2591_INTEGRATIONTIME_300MS);
+  // tsl.setTiming(TSL2591_INTEGRATIONTIME_400MS);
+  // tsl.setTiming(TSL2591_INTEGRATIONTIME_500MS);
+  // tsl.setTiming(TSL2591_INTEGRATIONTIME_600MS);  // longest integration time (dim light)
+
+  /* Display the gain and integration time for reference sake */  
+  Serial.println(F("------------------------------------"));
+  Serial.print  (F("Gain:         "));
+  tsl2591Gain_t gain = tsl.getGain();
+  switch(gain)
+  {
+    case TSL2591_GAIN_LOW:
+      Serial.println(F("1x (Low)"));
+      break;
+    case TSL2591_GAIN_MED:
+      Serial.println(F("25x (Medium)"));
+      break;
+    case TSL2591_GAIN_HIGH:
+      Serial.println(F("428x (High)"));
+      break;
+    case TSL2591_GAIN_MAX:
+      Serial.println(F("9876x (Max)"));
+      break;
+  }
+}
+
+void advancedRead(void)
+{
+  uint32_t lum = tsl.getFullLuminosity();
+  uint16_t ir, full;
+  ir = lum >> 16;
+  full = lum & 0xFFFF;
+  luminance = tsl.calculateLux(full, ir), 6;
+  // Serial.print(F("[ ")); Serial.print(millis()); Serial.print(F(" ms ] "));
+  // Serial.print(F("IR: ")); Serial.print(ir);  Serial.print(F("  "));
+  // Serial.print(F("Full: ")); Serial.print(full); Serial.print(F("  "));
+  // Serial.print(F("Visible: ")); Serial.print(full - ir); Serial.print(F("  "));
+  // Serial.print(F("Lux: ")); Serial.println(tsl.calculateLux(full, ir), 6);
+}
+
+
+
+void OutdoorValues() {
+  out_temperature = bme_out.readTemperature();
+  out_humidity = bme_out.readHumidity();
+  out_pressure = bme_out.readPressure() / 100.0F;
+  out_altitude = bme_out.readAltitude(SEALEVELPRESSURE_HPA);
+
+  // Convert temperature to Fahrenheit
+  /*Serial.print("Temperature = ");
+  Serial.print(1.8 * bme_out.readTemperature() + 32);
+  Serial.println(" *F");*/
+  
+}
+
+
+String SendHTML(float temperature,float humidity,float pressure,float altitude, float luminance){
+  String ptr = "<!DOCTYPE html>";
+  ptr +="<html>";
+  ptr +="<head>";
+  ptr +="<title>Real-time Data</title>";
+  ptr +="<meta name='viewport' content='width=device-width, initial-scale=1.0'>";
+  ptr +="<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600' rel='stylesheet'>";
+  ptr +="<style>";
+  ptr +="html { font-family: 'Open Sans', sans-serif; display: block; margin: 0px auto; text-align: center;color: #444444;}";
+  ptr +="body{margin: 0px;} ";
+  ptr +="h1 {margin: 50px auto 30px;} ";
+  ptr +=".side-by-side{display: table-cell;vertical-align: middle;position: relative;}";
+  ptr +=".text{font-weight: 600;font-size: 19px;width: 200px;}";
+  ptr +=".reading{font-weight: 300;font-size: 50px;padding-right: 25px;}";
+  ptr +=".temperature .reading{color: #a52525;}";
+  ptr +=".humidity .reading{color: #a52525;}";
+  ptr +=".pressure .reading{color: #a52525;}";
+  ptr +=".altitude .reading{color: #a52525;}";
+   ptr +=".luminance .reading{color: #a52525;}";
+  ptr +=".superscript{font-size: 17px;font-weight: 600;position: absolute;top: 10px;}";
+  ptr +=".data{padding: 10px;}";
+  ptr +=".container{display: table;margin: 0 auto;}";
+  ptr +=".icon{width:65px}";
+  ptr +="</style>";
+  ptr +="</head>";
+  ptr +="<body>";
+  ptr +="<h1>Real-time Data</h1>";
+  ptr +="<div class='container'>";
+  
+  ptr +="<div class='data temperature'>";
+  ptr +="<div class='side-by-side icon'>";
+  ptr += "<svg id=\"Layer_1\" data-name=\"Layer 1\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 255.85 255.85\">";
+  ptr += "  <rect width=\"255.85\" height=\"255.85\" style=\"fill: #fff; stroke-width: 0px;\"/>";
+  ptr += "  <g id=\"L79YoQ\">";
+  ptr += "    <g>";
+  ptr += "      <path d=\"M166.68,94.81c0,15.52-.03,31.04.06,46.56,0,1.19.6,2.68,1.44,3.51,13.58,13.52,19.79,29.84,17.38,48.8-2.88,22.65-15.26,38.79-36.5,47.17-20.74,8.18-40.48,4.95-57.79-9.01-15.57-12.55-22.63-29.37-21.26-49.4,1.01-14.71,7.05-27.21,17.68-37.44,1.14-1.1,1.52-2.24,1.51-3.79-.04-29.53.03-59.06-.06-88.59-.03-10.35,3-19.44,9.84-27.26,15.85-18.13,45.28-17.04,59.74,2.21,5.51,7.34,8.05,15.58,7.98,24.75-.1,14.16-.03,28.32-.03,42.48ZM108.49,101.21c0,14.16-.28,28.33.13,42.48.17,5.97-1.35,10.07-6.08,14.11-11.25,9.59-15.42,22.32-12.55,36.77,4.1,20.62,23.03,33.49,43.99,30.51,25.42-3.61,40.36-32.24,28.85-55.17-3.1-6.17-7.64-11.06-12.91-15.33-1.95-1.57-2.61-3.3-2.6-5.8.08-30.82.06-61.65.04-92.47,0-2.42-.05-4.85-.32-7.25-.86-7.9-5.21-13.29-12.53-16.04-7.51-2.82-15.67-.61-20.79,5-3.86,4.22-5.24,9.25-5.24,14.79,0,16.13,0,32.26,0,48.39Z\" style=\"fill: #a52425; stroke-width: 0px;\"/>";
+  ptr += "      <path d=\"M118.28,90.09h19.31v2.76c0,21.42.02,42.84-.04,64.26,0,1.67.45,2.47,2.05,3.18,11.49,5.08,18.47,16.85,17.36,28.97-1.18,12.87-10.23,23.15-22.96,26.05-16.07,3.67-32.45-7.67-34.76-24.06-1.88-13.35,4.77-25.55,17.03-30.98,1.61-.71,2.04-1.53,2.03-3.19-.05-21.35-.04-42.69-.04-64.04,0-.9,0-1.8,0-2.98Z\" style=\"fill: #a52425; stroke-width: 0px;\"/>";
+  ptr += "    </g>";
+  ptr += "  </g>";
+  ptr += "</svg>";
+  ptr +="</div>";
+  ptr +="<div class='side-by-side text'>Temperature</div>";
+  ptr +="<div class='side-by-side reading'>";
+  ptr +=(int)temperature;
+  ptr +="<span class='superscript'>&deg;C</span></div>";
+  ptr +="</div>";
+
+  ptr +="<div class='data humidity'>";
+  ptr +="<div class='side-by-side icon'>";
+  ptr += "<svg id=\"Layer_1\" data-name=\"Layer 1\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 255.85 255.85\">";
+  ptr += "  <rect width=\"255.85\" height=\"255.85\" style=\"fill: #fff; stroke-width: 0px;\"/>";
+  ptr += "  <g>";
+  ptr += "    <path d=\"M97.5,221.94s0-.01,0,0h0Z\" style=\"fill: #a52425; stroke-width: 0px;\"/>";
+  ptr += "    <path d=\"M233.09,156.16c-.86-8.71-3.72-16.92-6.92-25-7.04-17.79-16.26-34.49-26.12-50.84-13.42-22.26-28.03-43.73-43.53-64.59-2.74-3.69-6.31-3.89-8.89-.43-14.75,19.74-28.58,40.1-41.55,61.06-.62,1.01-.53,1.65.19,2.53,2.5,3.08,4.96,6.2,7.35,9.36,10.13,13.39,19.59,27.22,26.62,42.55,3.83,8.35,7.08,16.96,6.82,26.28-.67,24.18-11.1,43.18-31.5,56.28-5.51,3.54-11.81,5.85-17.87,8.77.21.21.42.43.64.62,19.31,16.46,41.64,23.21,66.61,19.07,28.45-4.71,48.94-20.72,61.24-46.8,5.77-12.25,8.26-25.29,6.92-38.87Z\" style=\"fill: #a52425; stroke-width: 0px;\"/>";
+  ptr += "    <path d=\"M97.5,221.94s.03.08.09.23c.03-.02.06-.03.1-.05-.05-.05-.11-.1-.16-.15-.01-.01-.02-.02-.02-.03Z\" style=\"fill: #a52425; stroke-width: 0px;\"/>";
+  ptr += "    <path d=\"M137.57,157.89c-.14-1.94-.17-3.89-.45-5.81-1.2-8.18-4.39-15.67-8.22-22.89-12.04-22.71-28.03-42.56-45.04-61.66-2.43-2.73-5.54-2.69-7.95.13-6.65,7.8-13.39,15.54-19.75,23.58-10.27,12.99-19.8,26.5-26.97,41.5-4.36,9.11-7.58,18.44-6.63,28.9,2.59,28.49,25.72,51,54.31,52.5,32.46,1.71,59.87-23.74,60.7-56.25Z\" style=\"fill: #a52425; stroke-width: 0px;\"/>";
+  ptr += "  </g>";
+  ptr += "</svg>";
+  ptr +="</div>";
+  ptr +="<div class='side-by-side text'>Humidity</div>";
+  ptr +="<div class='side-by-side reading'>";
+  ptr +=(int)humidity;
+  ptr +="<span class='superscript'>%</span></div>";
+  ptr +="</div>";
+  
+  // ptr +="<div class='data pressure'>";
+  // ptr +="<div class='side-by-side icon'>";
+  // ptr +="<svg enable-background='new 0 0 40.542 40.541'height=40.541px id=Layer_1 version=1.1 viewBox='0 0 40.542 40.541'width=40.542px x=0px xml:space=preserve xmlns=http://www.w3.org/2000/svg xmlns:xlink=http://www.w3.org/1999/xlink y=0px><g><path d='M34.313,20.271c0-0.552,0.447-1,1-1h5.178c-0.236-4.841-2.163-9.228-5.214-12.593l-3.425,3.424";
+  // ptr +="c-0.195,0.195-0.451,0.293-0.707,0.293s-0.512-0.098-0.707-0.293c-0.391-0.391-0.391-1.023,0-1.414l3.425-3.424";
+  // ptr +="c-3.375-3.059-7.776-4.987-12.634-5.215c0.015,0.067,0.041,0.13,0.041,0.202v4.687c0,0.552-0.447,1-1,1s-1-0.448-1-1V0.25";
+  // ptr +="c0-0.071,0.026-0.134,0.041-0.202C14.39,0.279,9.936,2.256,6.544,5.385l3.576,3.577c0.391,0.391,0.391,1.024,0,1.414";
+  // ptr +="c-0.195,0.195-0.451,0.293-0.707,0.293s-0.512-0.098-0.707-0.293L5.142,6.812c-2.98,3.348-4.858,7.682-5.092,12.459h4.804";
+  // ptr +="c0.552,0,1,0.448,1,1s-0.448,1-1,1H0.05c0.525,10.728,9.362,19.271,20.22,19.271c10.857,0,19.696-8.543,20.22-19.271h-5.178";
+  // ptr +="C34.76,21.271,34.313,20.823,34.313,20.271z M23.084,22.037c-0.559,1.561-2.274,2.372-3.833,1.814";
+  // ptr +="c-1.561-0.557-2.373-2.272-1.815-3.833c0.372-1.041,1.263-1.737,2.277-1.928L25.2,7.202L22.497,19.05";
+  // ptr +="C23.196,19.843,23.464,20.973,23.084,22.037z'fill=#a52425 /></g></svg>";
+  // ptr +="</div>";
+  // ptr +="<div class='side-by-side text'>Pressure</div>";
+  // ptr +="<div class='side-by-side reading'>";
+  // ptr +=(int)pressure;
+  // ptr +="<span class='superscript'>hPa</span></div>";
+  // ptr +="</div>";
+  
+  ptr +="<div class='data luminance'>";
+  ptr +="<div class='side-by-side icon'>";
+  ptr += "<svg id=\"Layer_1\" data-name=\"Layer 1\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 255.85 255.85\">";
+  ptr += "  <rect width=\"255.85\" height=\"255.85\" style=\"fill: #fff; stroke-width: 0px;\"/>";
+  ptr += "  <g id=\"_1H3VcU\" data-name=\"1H3VcU\">";
+  ptr += "    <g>";
+  ptr += "      <path d=\"M198.43,122.84c15.51,3.88,27.28,12.85,34.77,27.43,16.59,32.29-3.35,72.38-38.39,77.28-2.86.4-5.77.57-8.65.57-43.07.04-86.15-.12-129.22.09-20.79.1-35.3-14.54-39.11-30.51-3.91-16.41,2.66-34.05,16.43-43.22,1.4-.94,1.71-1.67,1.23-3.38-8.48-29.84,10.33-59.97,40.12-64.32,7.65-1.12,15.17-.31,22.45,2.35,1.34.49,2,.19,2.88-.88,14.72-17.9,33.38-25.19,55.49-19.65,22.17,5.56,35.65,20.85,40.69,43.87.73,3.33.88,6.79,1.32,10.38ZM131.44,173.36c13.37-.03,24.25-11.27,24.15-24.96-.1-13.66-10.87-24.74-24.13-24.81-13.23-.07-24.13,11.24-24.08,25.01.04,13.69,10.82,24.79,24.06,24.76ZM82.34,173.21c6.01.05,11.54-2.28,15.4-6.52,3-3.29,3.15-7.38.37-10.15-2.69-2.69-6.49-2.29-9.68.63-1.28,1.17-3.03,2.21-4.68,2.46-6.3.96-12.12-4.29-12.29-10.87-.11-4.38,1.66-7.84,5.26-10.16,3.61-2.33,7.32-2.22,11.16-.38,1.7.82,3.66,1.58,5.48,1.53,2.73-.07,4.83-2.42,5.37-5.08.6-2.96-.59-5.61-3.31-7.41-8.55-5.65-19.7-5.04-27.81,1.53-7.96,6.45-11.16,17.49-7.94,27.37,3.31,10.14,12.37,16.94,22.67,17.04ZM183.12,186.55c.91-1.34,1.62-2.27,2.21-3.28,2.49-4.27,5.53-8.32,7.28-12.9,3.33-8.73-1.77-18.12-10.51-20.52-8.66-2.37-17.48,3.3-19.23,12.38-.82,4.26,2.4,8.21,6.59,7.98,3.32-.18,5.26-2.15,6.17-5.35.5-1.77,1.72-2.45,3.34-1.89,1.75.61,1.97,2.11,1.22,3.66-.84,1.73-1.75,3.45-2.84,5.02-3.83,5.53-7.81,10.95-11.62,16.5-3.83,5.58-1.21,11.41,5.41,11.73,5.92.28,11.87.19,17.8,0,3.73-.12,6.41-3.34,6.24-6.96-.16-3.6-2.89-6.26-6.59-6.38-1.66-.05-3.32,0-5.48,0Z\" style=\"fill: #a52425; stroke-width: 0px;\"/>";
+  ptr += "      <path d=\"M79.72,29.52c10.79-.02,19.49,8.88,19.54,20.01.05,11.24-8.63,20.3-19.49,20.33-10.77.03-19.65-9.15-19.6-20.27.05-11.06,8.79-20.04,19.55-20.06Z\" style=\"fill: #a52425; stroke-width: 0px;\"/>";
+  ptr += "      <path d=\"M219.5,60.92c10.77-.03,19.53,8.9,19.6,19.99.07,11.19-8.66,20.3-19.5,20.35-10.69.05-19.53-8.98-19.6-20.03-.07-11.21,8.64-20.27,19.5-20.31Z\" style=\"fill: #a52425; stroke-width: 0px;\"/>";
+  ptr += "      <path d=\"M162.47,35.96c4.89-.05,9.03,4.11,9.11,9.16.09,5.17-4.09,9.53-9.1,9.49-4.89-.04-8.96-4.27-8.96-9.32,0-5.05,4.06-9.29,8.95-9.33Z\" style=\"fill: #a52425; stroke-width: 0px;\"/>";
+  ptr += "      <path d=\"M49.94,72.95c.06,4.92-3.86,9.1-8.62,9.21-4.87.11-9-4.09-8.98-9.13.02-4.92,4-9.03,8.77-9.05,4.77-.02,8.78,4.06,8.84,8.98Z\" style=\"fill: #a52425; stroke-width: 0px;\"/>";
+  ptr += "      <path d=\"M120.39,148.54c-.01-6.37,5.03-11.59,11.13-11.52,6.05.07,11.02,5.22,11.06,11.44.04,6.32-5.01,11.49-11.19,11.47-6.1-.02-10.98-5.07-10.99-11.39Z\" style=\"fill: #a52425; stroke-width: 0px;\"/>";
+  ptr += "    </g>";
+  ptr += "  </g>";
+  ptr += "</svg>";
+  ptr +="</div>";
+  ptr +="<div class='side-by-side text'>Luminance Level</div>";
+  ptr +="<div class='side-by-side reading'>";
+  ptr +=(int)luminance;
+  ptr +="<span class='superscript'>ppm</span></div>";
+  ptr +="</div>";
+  ptr +="</div>";
+  ptr +="</body>";
+  ptr +="</html>";
+  return ptr;
+}
